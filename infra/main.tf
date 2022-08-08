@@ -25,6 +25,3 @@ resource "aws_ecrpublic_repository" "default" {
   }
 }
 
-output "repository_uri" {
-  value = aws_ecrpublic_repository.default.repository_uri
-}
