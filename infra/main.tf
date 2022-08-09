@@ -32,36 +32,36 @@ resource "aws_ecr_repository" "main" {
 
 }
 
-resource "aws_ecr_repository_policy" "main" {
-  repository = aws_ecr_repository.main.name
+# resource "aws_ecr_repository_policy" "main" {
+#   repository = aws_ecr_repository.main.name
 
-  policy = jsonencode({
-    Version = "2008-10-17"
-    Statement = [
-      {
-        Sid       = "SandboxAppRunner"
-        Effect    = "Allow"
-        Principal = "*"
-        Action = [
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:PutImage",
-          "ecr:InitiateLayerUpload",
-          "ecr:UploadLayerPart",
-          "ecr:CompleteLayerUpload",
-          "ecr:DescribeRepositories",
-          "ecr:GetRepositoryPolicy",
-          "ecr:ListImages",
-          "ecr:DeleteRepository",
-          "ecr:BatchDeleteImage",
-          "ecr:SetRepositoryPolicy",
-          "ecr:DeleteRepositoryPolicy"
-        ]
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2008-10-17"
+#     Statement = [
+#       {
+#         Sid       = "SandboxAppRunner"
+#         Effect    = "Allow"
+#         Principal = "*"
+#         Action = [
+#           "ecr:GetDownloadUrlForLayer",
+#           "ecr:BatchGetImage",
+#           "ecr:BatchCheckLayerAvailability",
+#           "ecr:PutImage",
+#           "ecr:InitiateLayerUpload",
+#           "ecr:UploadLayerPart",
+#           "ecr:CompleteLayerUpload",
+#           "ecr:DescribeRepositories",
+#           "ecr:GetRepositoryPolicy",
+#           "ecr:ListImages",
+#           "ecr:DeleteRepository",
+#           "ecr:BatchDeleteImage",
+#           "ecr:SetRepositoryPolicy",
+#           "ecr:DeleteRepositoryPolicy"
+#         ]
+#       }
+#     ]
+#   })
+# }
 
 ### App Runner IAM Role ###
 
