@@ -14,19 +14,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# resource "aws_ecrpublic_repository" "default" {
-#   repository_name = "epomatti-sandbox"
+locals {
+  image_name = "epomatti-sandbox"
+}
 
-#   catalog_data {
-#     about_text        = "Sandbox repository"
-#     architectures     = ["x86-64"]
-#     description       = "Sandbox repository"
-#     operating_systems = ["Linux"]
-#   }
-# }
+### ECR Private Repository ###
 
 resource "aws_ecr_repository" "main" {
-  name                 = "epomatti-sandbox"
+  name                 = local.image_name
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -41,7 +36,7 @@ resource "aws_ecr_repository_policy" "main" {
     Version = "2008-10-17"
     Statement = [
       {
-        Sid       = "new policy"
+        Sid       = "SandboxAppRunner"
         Effect    = "Allow"
         Principal = "*"
         Action = [
@@ -64,3 +59,61 @@ resource "aws_ecr_repository_policy" "main" {
     ]
   })
 }
+
+### App Runner IAM Role ###
+
+resource "aws_iam_role" "app_runner" {
+  name = "SandboxAppRunnerServiceRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "build.apprunner.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+data "aws_iam_policy" "ecr" {
+  arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "app_runner" {
+  role       = aws_iam_role.app_runner.name
+  policy_arn = data.aws_iam_policy.ecr.arn
+}
+
+# ## App Runner ###
+
+# resource "aws_apprunner_service" "main" {
+#   service_name = "sandbox-service"
+
+#   source_configuration {
+#     image_repository {
+#       image_configuration {
+#         port = "80"
+#       }
+#       image_identifier      = "${aws_ecr_repository.main.repository_url}:latest"
+#       image_repository_type = "ECR"
+#     }
+#     auto_deployments_enabled = true
+#   }
+
+#   instance_configuration {
+#     instance_role_arn = aws_iam_role.app_runner.arn
+#   }
+
+#   tags = {
+#     Name = "sandbox-service"
+#   }
+# }
+
+# output "aws_ecr_repository" {
+#   value = aws_ecr_repository.main.repository_url
+# }
