@@ -2,10 +2,28 @@
 
 AWS App Runner + ECR sandbox.
 
-Testing the docker build:
+Create the infrastructure:
+
+```sh
+terraform init
+terraform apply -auto-approve
+```
+
+You'll need to publish an image to the AWS repository. A GitHub action is provided here.
+
+Check the `app_runner_service_url` output variable to access the application.
+
+### Local Testing
+
+For local building the docker image:
 
 ```sh
 docker build -t dotnet-app .
 ```
 
+Running the .NET app:
+
+```sh
+dotnet restore
+dotnet run
 ```

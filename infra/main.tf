@@ -32,40 +32,9 @@ resource "aws_ecr_repository" "main" {
 
 }
 
-# resource "aws_ecr_repository_policy" "main" {
-#   repository = aws_ecr_repository.main.name
-
-#   policy = jsonencode({
-#     Version = "2008-10-17"
-#     Statement = [
-#       {
-#         Sid       = "SandboxAppRunner"
-#         Effect    = "Allow"
-#         Principal = "*"
-#         Action = [
-#           "ecr:GetDownloadUrlForLayer",
-#           "ecr:BatchGetImage",
-#           "ecr:BatchCheckLayerAvailability",
-#           "ecr:PutImage",
-#           "ecr:InitiateLayerUpload",
-#           "ecr:UploadLayerPart",
-#           "ecr:CompleteLayerUpload",
-#           "ecr:DescribeRepositories",
-#           "ecr:GetRepositoryPolicy",
-#           "ecr:ListImages",
-#           "ecr:DeleteRepository",
-#           "ecr:BatchDeleteImage",
-#           "ecr:SetRepositoryPolicy",
-#           "ecr:DeleteRepositoryPolicy"
-#         ]
-#       }
-#     ]
-#   })
-# }
-
 ### App Runner IAM Role ###
 
-resource "aws_iam_role" "app_runner" {
+resource "aws_iam_role" "access_role" {
   name = "SandboxAppRunnerServiceRole"
 
   assume_role_policy = jsonencode({
@@ -83,13 +52,9 @@ resource "aws_iam_role" "app_runner" {
   })
 }
 
-data "aws_iam_policy" "ecr" {
-  arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
-}
-
-resource "aws_iam_role_policy_attachment" "app_runner" {
-  role       = aws_iam_role.app_runner.name
-  policy_arn = data.aws_iam_policy.ecr.arn
+resource "aws_iam_role_policy_attachment" "access_role" {
+  role       = aws_iam_role.access_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
 }
 
 ## App Runner ###
@@ -106,17 +71,25 @@ resource "aws_apprunner_service" "main" {
       image_repository_type = "ECR"
     }
     auto_deployments_enabled = true
-  }
 
-  instance_configuration {
-    instance_role_arn = aws_iam_role.app_runner.arn
+    authentication_configuration {
+      access_role_arn = aws_iam_role.access_role.arn
+    }
   }
 
   tags = {
     Name = "sandbox-service"
   }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.access_role
+  ]
 }
 
-# output "aws_ecr_repository" {
-#   value = aws_ecr_repository.main.repository_url
-# }
+output "aws_ecr_repository" {
+  value = aws_ecr_repository.main.repository_url
+}
+
+output "app_runner_service_url" {
+  value = aws_apprunner_service.main.service_url
+}
