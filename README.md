@@ -18,7 +18,12 @@ Check the `app_runner_service_url` output variable to access the application.
 For local building the docker image:
 
 ```sh
-docker build -t dotnet-app .
+docker build -t dotnet-app-image .
+docker run --rm -p 80:80 --name dotnet-app dotnet-app-image
+```
+
+```sh
+docker run 
 ```
 
 Running the .NET app:
