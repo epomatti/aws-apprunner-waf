@@ -92,30 +92,30 @@ resource "aws_iam_role_policy_attachment" "app_runner" {
   policy_arn = data.aws_iam_policy.ecr.arn
 }
 
-# ## App Runner ###
+## App Runner ###
 
-# resource "aws_apprunner_service" "main" {
-#   service_name = "sandbox-service"
+resource "aws_apprunner_service" "main" {
+  service_name = "sandbox-service"
 
-#   source_configuration {
-#     image_repository {
-#       image_configuration {
-#         port = "80"
-#       }
-#       image_identifier      = "${aws_ecr_repository.main.repository_url}:latest"
-#       image_repository_type = "ECR"
-#     }
-#     auto_deployments_enabled = true
-#   }
+  source_configuration {
+    image_repository {
+      image_configuration {
+        port = "5000"
+      }
+      image_identifier      = "${aws_ecr_repository.main.repository_url}:latest"
+      image_repository_type = "ECR"
+    }
+    auto_deployments_enabled = true
+  }
 
-#   instance_configuration {
-#     instance_role_arn = aws_iam_role.app_runner.arn
-#   }
+  instance_configuration {
+    instance_role_arn = aws_iam_role.app_runner.arn
+  }
 
-#   tags = {
-#     Name = "sandbox-service"
-#   }
-# }
+  tags = {
+    Name = "sandbox-service"
+  }
+}
 
 # output "aws_ecr_repository" {
 #   value = aws_ecr_repository.main.repository_url
