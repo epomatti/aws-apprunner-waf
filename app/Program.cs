@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.MapHealthChecks("/healthz");
+app.MapHealthChecks("/");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
