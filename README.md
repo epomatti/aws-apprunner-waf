@@ -22,10 +22,6 @@ docker build -t dotnet-app-image .
 docker run --rm -p 80:80 --name dotnet-app dotnet-app-image
 ```
 
-```sh
-docker run 
-```
-
 Running the .NET app:
 
 ```sh
