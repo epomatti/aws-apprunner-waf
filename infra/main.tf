@@ -59,8 +59,26 @@ resource "aws_iam_role_policy_attachment" "access_role" {
 
 ## App Runner ###
 
+resource "aws_apprunner_auto_scaling_configuration_version" "main" {
+  auto_scaling_configuration_name = "main"
+
+  max_concurrency = 50
+  max_size        = 5
+  min_size        = 2
+
+  tags = {
+    Name = "main-apprunner-autoscaling"
+  }
+}
+
 resource "aws_apprunner_service" "main" {
-  service_name = "sandbox-service"
+  service_name                   = "sandbox-service"
+  auto_scaling_configuration_arn = aws_apprunner_auto_scaling_configuration_version.main.arn
+
+  instance_configuration {
+    cpu    = "2 vCPU"
+    memory = "4 GB"
+  }
 
   source_configuration {
     image_repository {
@@ -78,7 +96,8 @@ resource "aws_apprunner_service" "main" {
   }
 
   health_check_configuration {
-    path = "/healthz"
+    path                = "/"
+    unhealthy_threshold = 2
   }
 
   tags = {
