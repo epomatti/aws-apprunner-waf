@@ -6,7 +6,14 @@ Create the infrastructure:
 
 ```sh
 terraform init
+terraform plan
 terraform apply -auto-approve
+```
+
+```
+docker build . -t <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/dotnet-app:latest
+aws ecr get-login-password --region <REGION> | docker login --username AWS --password-stdin <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com
+docker push <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/dotnet-app:latest
 ```
 
 You'll need to publish an image to the AWS repository. A GitHub action is provided here.

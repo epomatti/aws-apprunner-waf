@@ -2,117 +2,42 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.25.0"
+      version = "~> 4.55.0"
     }
-  }
-  backend "local" {
-    path = "./.workspace/terraform.tfstate"
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
-locals {
-  image_name = "epomatti-sandbox"
+variable "aws_region" {
+  type    = string
+  default = "us-east-1"
 }
 
-### ECR Private Repository ###
-
-resource "aws_ecr_repository" "main" {
-  name                 = local.image_name
-  image_tag_mutability = "MUTABLE"
-
-  force_delete = true
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-
+# Modules
+module "ecr" {
+  source = "./modules/ecr"
 }
 
-### App Runner IAM Role ###
-
-resource "aws_iam_role" "access_role" {
-  name = "SandboxAppRunnerServiceRole"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "build.apprunner.amazonaws.com"
-        }
-      },
-    ]
-  })
+module "iam" {
+  source = "./modules/iam"
 }
 
-resource "aws_iam_role_policy_attachment" "access_role" {
-  role       = aws_iam_role.access_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+# module "app_runner" {
+#   source          = "./modules/app-runner"
+#   repository_url  = module.ecr.repository_url
+#   access_role_arn = module.iam.access_role_arn
+# }
+
+
+# Output
+
+output "aws_ecr_repository_url" {
+  value = module.ecr.repository_url
 }
 
-## App Runner ###
-
-resource "aws_apprunner_auto_scaling_configuration_version" "main" {
-  auto_scaling_configuration_name = "main"
-
-  max_concurrency = 50
-  max_size        = 5
-  min_size        = 2
-
-  tags = {
-    Name = "main-apprunner-autoscaling"
-  }
-}
-
-resource "aws_apprunner_service" "main" {
-  service_name                   = "sandbox-service"
-  auto_scaling_configuration_arn = aws_apprunner_auto_scaling_configuration_version.main.arn
-
-  instance_configuration {
-    cpu    = "2 vCPU"
-    memory = "4 GB"
-  }
-
-  source_configuration {
-    image_repository {
-      image_configuration {
-        port = "80"
-      }
-      image_identifier      = "${aws_ecr_repository.main.repository_url}:latest"
-      image_repository_type = "ECR"
-    }
-    auto_deployments_enabled = true
-
-    authentication_configuration {
-      access_role_arn = aws_iam_role.access_role.arn
-    }
-  }
-
-  health_check_configuration {
-    path                = "/"
-    unhealthy_threshold = 2
-  }
-
-  tags = {
-    Name = "sandbox-service"
-  }
-
-  depends_on = [
-    aws_iam_role_policy_attachment.access_role
-  ]
-}
-
-output "aws_ecr_repository" {
-  value = aws_ecr_repository.main.repository_url
-}
-
-output "app_runner_service_url" {
-  value = aws_apprunner_service.main.service_url
-}
+# output "app_runner_service_url" {
+#   value = module.app_runner.app_runner_service_url
+# }
