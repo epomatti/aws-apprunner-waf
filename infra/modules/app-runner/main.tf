@@ -55,8 +55,3 @@ resource "aws_apprunner_observability_configuration" "main" {
     vendor = "AWSXRAY"
   }
 }
-
-# Output
-output "app_runner_service_url" {
-  value = aws_apprunner_service.main.service_url
-}

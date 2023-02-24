@@ -31,11 +31,7 @@ module "app_runner" {
   access_role_arn = module.iam.access_role_arn
 }
 
-# Output
-output "aws_ecr_repository_url" {
-  value = module.ecr.repository_url
-}
-
-output "app_runner_service_url" {
-  value = module.app_runner.app_runner_service_url
+module "waf" {
+  source         = "./modules/waf"
+  app_runner_arn = module.app_runner.arn
 }
