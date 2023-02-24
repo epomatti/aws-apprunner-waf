@@ -25,19 +25,17 @@ module "iam" {
   source = "./modules/iam"
 }
 
-# module "app_runner" {
-#   source          = "./modules/app-runner"
-#   repository_url  = module.ecr.repository_url
-#   access_role_arn = module.iam.access_role_arn
-# }
-
+module "app_runner" {
+  source          = "./modules/app-runner"
+  repository_url  = module.ecr.repository_url
+  access_role_arn = module.iam.access_role_arn
+}
 
 # Output
-
 output "aws_ecr_repository_url" {
   value = module.ecr.repository_url
 }
 
-# output "app_runner_service_url" {
-#   value = module.app_runner.app_runner_service_url
-# }
+output "app_runner_service_url" {
+  value = module.app_runner.app_runner_service_url
+}
