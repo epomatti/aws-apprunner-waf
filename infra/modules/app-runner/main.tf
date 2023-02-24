@@ -1,7 +1,7 @@
 
 
 resource "aws_apprunner_service" "main" {
-  service_name                   = "sandbox-service"
+  service_name                   = "dotnet-app"
   auto_scaling_configuration_arn = aws_apprunner_auto_scaling_configuration_version.main.arn
 
   instance_configuration {
@@ -33,10 +33,6 @@ resource "aws_apprunner_service" "main" {
   observability_configuration {
     observability_enabled           = true
     observability_configuration_arn = aws_apprunner_observability_configuration.main.arn
-  }
-
-  tags = {
-    Name = "sandbox-service"
   }
 }
 
