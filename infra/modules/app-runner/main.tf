@@ -1,18 +1,12 @@
-variable "repository_url" {
-  type = string
-}
 
-variable "access_role_arn" {
-  type = string
-}
 
 resource "aws_apprunner_service" "main" {
   service_name                   = "sandbox-service"
   auto_scaling_configuration_arn = aws_apprunner_auto_scaling_configuration_version.main.arn
 
   instance_configuration {
-    cpu    = "2 vCPU"
-    memory = "4 GB"
+    cpu    = var.cpu
+    memory = var.memory
   }
 
   source_configuration {
@@ -33,7 +27,12 @@ resource "aws_apprunner_service" "main" {
 
   health_check_configuration {
     path                = "/"
-    unhealthy_threshold = 2
+    unhealthy_threshold = 3
+  }
+
+  observability_configuration {
+    observability_enabled           = true
+    observability_configuration_arn = aws_apprunner_observability_configuration.main.arn
   }
 
   tags = {
@@ -44,15 +43,24 @@ resource "aws_apprunner_service" "main" {
 resource "aws_apprunner_auto_scaling_configuration_version" "main" {
   auto_scaling_configuration_name = "main"
 
-  max_concurrency = 50
-  max_size        = 5
-  min_size        = 2
+  max_concurrency = var.max_concurrency
+  max_size        = var.max_size
+  min_size        = var.min_size
 
   tags = {
     Name = "main-apprunner-autoscaling"
   }
 }
 
+resource "aws_apprunner_observability_configuration" "main" {
+  observability_configuration_name = "awsxray"
+
+  trace_configuration {
+    vendor = "AWSXRAY"
+  }
+}
+
+# Output
 output "app_runner_service_url" {
   value = aws_apprunner_service.main.service_url
 }
