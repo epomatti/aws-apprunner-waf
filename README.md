@@ -18,7 +18,6 @@ aws ecr get-login-password --region <REGION> | docker login --username AWS --pas
 docker push <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/dotnet-app:latest
 ```
 
-
 ### Local Testing
 
 Running the .NET app:
