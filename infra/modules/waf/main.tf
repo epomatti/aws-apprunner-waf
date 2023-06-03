@@ -7,6 +7,12 @@ resource "aws_wafv2_web_acl" "default" {
     allow {}
   }
 
+  visibility_config {
+    cloudwatch_metrics_enabled = false
+    metric_name                = "friendly-metric-name"
+    sampled_requests_enabled   = false
+  }
+
   rule {
     name     = "allowed-contries"
     priority = 0
@@ -27,15 +33,33 @@ resource "aws_wafv2_web_acl" "default" {
 
     visibility_config {
       cloudwatch_metrics_enabled = false
-      metric_name                = "friendly-rule-metric-name"
+      metric_name                = "allowed-contries"
       sampled_requests_enabled   = false
     }
   }
-  visibility_config {
-    cloudwatch_metrics_enabled = false
-    metric_name                = "friendly-metric-name"
-    sampled_requests_enabled   = false
+
+  rule {
+    name     = "rate-limit"
+    priority = 1
+
+    action {
+      block {}
+    }
+
+    statement {
+      rate_based_statement {
+        aggregate_key_type = "IP"
+        limit              = 100
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = false
+      metric_name                = "rate-limit"
+      sampled_requests_enabled   = false
+    }
   }
+
 }
 
 resource "aws_wafv2_web_acl_association" "app_runner" {
