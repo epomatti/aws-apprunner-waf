@@ -20,7 +20,7 @@ Customize WAF rules behavior:
 waf_allowed_country_codes = ["BR", "US"]
 ```
 
-To test the 
+To test the rate-limiting rule:
 
 ```sh
 bash loop.sh https://<app_id>.us-east-2.awsapprunner.com
