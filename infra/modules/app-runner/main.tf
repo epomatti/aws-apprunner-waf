@@ -16,7 +16,7 @@ resource "aws_apprunner_service" "main" {
       image_configuration {
         port = "80"
       }
-      image_identifier      = "${var.repository_url}:latest"
+      image_identifier      = "${var.repository_url}"
       image_repository_type = var.image_repository_type
     }
 
