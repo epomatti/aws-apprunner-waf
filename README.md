@@ -32,7 +32,7 @@ To use ECR, configure the `.auto.tfvars` file before creating the resources:
 
 ```terraform
 image_repository_type="ECR"
-repository_url=""
+repository_url="..."
 ```
 
 Also, uncomment the ECR authentication:
