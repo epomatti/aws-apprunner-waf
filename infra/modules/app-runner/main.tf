@@ -20,6 +20,7 @@ resource "aws_apprunner_service" "main" {
       image_repository_type = var.image_repository_type
     }
 
+    # TODO: Uncomment if using private ECR
     # authentication_configuration {
     #   access_role_arn = var.access_role_arn
     # }
