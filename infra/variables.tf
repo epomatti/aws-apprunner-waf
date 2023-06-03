@@ -38,9 +38,16 @@ variable "image_repository_type" {
   default = "ECR_PUBLIC"
 }
 
+### WAF ###
+
 variable "waf_allowed_country_codes" {
   type    = list(string)
   default = ["BR"]
+}
+
+variable "waf_rate_limit" {
+  type    = number
+  default = 100
 }
 
 variable "waf_acl_metrics_enabled" {
@@ -49,6 +56,16 @@ variable "waf_acl_metrics_enabled" {
 }
 
 variable "waf_acl_sample_requests_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "waf_rules_metrics_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "waf_rules_sample_requests_enabled" {
   type    = bool
   default = true
 }

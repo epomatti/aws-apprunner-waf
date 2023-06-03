@@ -20,6 +20,12 @@ Customize WAF rules behavior:
 waf_allowed_country_codes = ["BR", "US"]
 ```
 
+To test the 
+
+```sh
+bash loop.sh https://<app_id>.us-east-2.awsapprunner.com
+```
+
 ### Optional (ECR)
 
 To use ECR, configure the `.auto.tfvars` file before creating the resources:

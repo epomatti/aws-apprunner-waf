@@ -32,9 +32,9 @@ resource "aws_wafv2_web_acl" "default" {
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = var.rules_metrics_enabled
       metric_name                = "allowed-contries"
-      sampled_requests_enabled   = false
+      sampled_requests_enabled   = var.rules_sample_requests_enabled
     }
   }
 
@@ -49,14 +49,14 @@ resource "aws_wafv2_web_acl" "default" {
     statement {
       rate_based_statement {
         aggregate_key_type = "IP"
-        limit              = 100
+        limit              = var.rate_limit
       }
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = var.rules_metrics_enabled
       metric_name                = "rate-limit"
-      sampled_requests_enabled   = false
+      sampled_requests_enabled   = var.rules_sample_requests_enabled
     }
   }
 
