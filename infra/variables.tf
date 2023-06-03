@@ -37,3 +37,8 @@ variable "image_repository_type" {
   type    = string
   default = "ECR_PUBLIC"
 }
+
+variable "waf_allowed_country_codes" {
+  type    = list(string)
+  default = ["BR"]
+}

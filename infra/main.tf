@@ -28,6 +28,7 @@ module "app_runner" {
 }
 
 module "waf" {
-  source         = "./modules/waf"
-  app_runner_arn = module.app_runner.arn
+  source                = "./modules/waf"
+  app_runner_arn        = module.app_runner.arn
+  allowed_country_codes = var.waf_allowed_country_codes
 }

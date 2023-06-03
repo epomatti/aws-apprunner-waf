@@ -12,6 +12,14 @@ terraform apply -auto-approve
 
 The default image will be NGINX.
 
+### WAF
+
+Customize WAF rules behavior:
+
+```terraform
+waf_allowed_country_codes = ["BR", "US"]
+```
+
 ### Optional (ECR)
 
 To use ECR, configure the `.auto.tfvars` file before creating the resources:

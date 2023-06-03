@@ -1,9 +1,5 @@
-variable "app_runner_arn" {
-  type = string
-}
-
 resource "aws_wafv2_web_acl" "default" {
-  name        = "dotnet-app-waf"
+  name        = "waf-apprunner"
   description = "App Runner WAF"
   scope       = "REGIONAL"
 
@@ -12,21 +8,18 @@ resource "aws_wafv2_web_acl" "default" {
   }
 
   rule {
-    name     = "rule-1"
-    priority = 1
+    name     = "allowed-contries"
+    priority = 0
 
     action {
       block {}
     }
 
     statement {
-      rate_based_statement {
-        limit              = 10000
-        aggregate_key_type = "IP"
-
-        scope_down_statement {
+      not_statement {
+        statement {
           geo_match_statement {
-            country_codes = ["US", "NL", "BR"]
+            country_codes = var.allowed_country_codes
           }
         }
       }
