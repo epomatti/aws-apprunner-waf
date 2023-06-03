@@ -42,3 +42,14 @@ variable "waf_allowed_country_codes" {
   type    = list(string)
   default = ["BR"]
 }
+
+variable "waf_acl_metrics_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "waf_acl_sample_requests_enabled" {
+  type    = bool
+  default = true
+}
+

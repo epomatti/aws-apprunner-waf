@@ -28,7 +28,9 @@ module "app_runner" {
 }
 
 module "waf" {
-  source                = "./modules/waf"
-  app_runner_arn        = module.app_runner.arn
-  allowed_country_codes = var.waf_allowed_country_codes
+  source                      = "./modules/waf"
+  app_runner_arn              = module.app_runner.arn
+  allowed_country_codes       = var.waf_allowed_country_codes
+  acl_metrics_enabled         = var.waf_acl_metrics_enabled
+  acl_sample_requests_enabled = var.waf_acl_sample_requests_enabled
 }

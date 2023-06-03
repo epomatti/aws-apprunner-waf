@@ -5,3 +5,11 @@ variable "app_runner_arn" {
 variable "allowed_country_codes" {
   type = list(string)
 }
+
+variable "acl_metrics_enabled" {
+  type = bool
+}
+
+variable "acl_sample_requests_enabled" {
+  type = bool
+}

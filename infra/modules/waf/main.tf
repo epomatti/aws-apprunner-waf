@@ -8,9 +8,9 @@ resource "aws_wafv2_web_acl" "default" {
   }
 
   visibility_config {
-    cloudwatch_metrics_enabled = false
-    metric_name                = "friendly-metric-name"
-    sampled_requests_enabled   = false
+    cloudwatch_metrics_enabled = var.acl_metrics_enabled
+    metric_name                = "waf-apprunner-acl-metric"
+    sampled_requests_enabled   = var.acl_sample_requests_enabled
   }
 
   rule {
