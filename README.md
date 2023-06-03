@@ -30,7 +30,7 @@ bash loop.sh https://<app_id>.us-east-2.awsapprunner.com
 
 To use ECR, configure the `.auto.tfvars` file before creating the resources:
 
-```terraform
+```hcl
 image_repository_type="ECR"
 repository_url="..."
 ```
