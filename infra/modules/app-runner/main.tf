@@ -10,19 +10,19 @@ resource "aws_apprunner_service" "main" {
   }
 
   source_configuration {
-    auto_deployments_enabled = true
+    auto_deployments_enabled = false
 
     image_repository {
       image_configuration {
         port = "80"
       }
       image_identifier      = "${var.repository_url}:latest"
-      image_repository_type = "ECR"
+      image_repository_type = var.image_repository_type
     }
 
-    authentication_configuration {
-      access_role_arn = var.access_role_arn
-    }
+    # authentication_configuration {
+    #   access_role_arn = var.access_role_arn
+    # }
   }
 
   health_check_configuration {

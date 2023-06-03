@@ -25,3 +25,7 @@ variable "max_size" {
 variable "min_size" {
   type = number
 }
+
+variable "image_repository_type" {
+  type = string
+}

@@ -1,16 +1,26 @@
-# aws-apprunner
 
-AWS App Runner + ECR sandbox.
+# AWS App Runner + WAF
+
+AWS App Runner using WAF rules.
 
 Create the infrastructure:
 
 ```sh
 terraform init
-terraform plan
 terraform apply -auto-approve
 ```
 
-Publish the image:
+The default image will be NGINX.
+
+### Optional (ECR)
+
+To use ECR, create the repository and set the variable `repository_url` for Terraform. The IAM permission is already built into the code.
+
+```sh
+aws ecr create-repository --repository-name dotnet-app
+```
+
+Build and publish the image:
 
 ```
 docker build . -t <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/dotnet-app:latest
