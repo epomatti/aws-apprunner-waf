@@ -47,7 +47,7 @@ variable "waf_allowed_country_codes" {
 
 variable "waf_rate_limit" {
   type    = number
-  default = 100
+  default = 5000
 }
 
 variable "waf_acl_metrics_enabled" {
