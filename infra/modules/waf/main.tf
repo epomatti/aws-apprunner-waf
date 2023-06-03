@@ -24,7 +24,12 @@ resource "aws_wafv2_web_acl" "default" {
     priority = 0
 
     action {
-      block {}
+      block {
+        custom_response {
+          custom_response_body_key = "wafed"
+          response_code            = 403
+        }
+      }
     }
 
     statement {
@@ -49,7 +54,12 @@ resource "aws_wafv2_web_acl" "default" {
     priority = 1
 
     action {
-      block {}
+      block {
+        custom_response {
+          custom_response_body_key = "wafed"
+          response_code            = 403
+        }
+      }
     }
 
     statement {
@@ -62,6 +72,28 @@ resource "aws_wafv2_web_acl" "default" {
     visibility_config {
       cloudwatch_metrics_enabled = var.rules_metrics_enabled
       metric_name                = "rate-limit"
+      sampled_requests_enabled   = var.rules_sample_requests_enabled
+    }
+  }
+
+  rule {
+    name     = "sqli"
+    priority = 50
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesSQLiRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = var.rules_metrics_enabled
+      metric_name                = "sqli-metric"
       sampled_requests_enabled   = var.rules_sample_requests_enabled
     }
   }
