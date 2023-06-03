@@ -31,8 +31,8 @@ bash loop.sh https://<app_id>.us-east-2.awsapprunner.com
 To use ECR, configure the `.auto.tfvars` file before creating the resources:
 
 ```hcl
-image_repository_type="ECR"
-repository_url="..."
+image_repository_type = "ECR"
+repository_url = "..."
 ```
 
 Also, uncomment the ECR authentication:
