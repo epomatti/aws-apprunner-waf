@@ -1,4 +1,3 @@
-
 # AWS App Runner + WAF
 
 AWS App Runner using WAF rules.
@@ -25,6 +24,10 @@ To test the rate-limiting rule, run a loop and verify in another terminal when i
 ```sh
 bash loop.sh https://<app_id>.us-east-2.awsapprunner.com
 ```
+
+Blocked requests should have a custom message:
+
+<img src=".assets/wafed.png" width=400 />
 
 ### Optional (ECR)
 

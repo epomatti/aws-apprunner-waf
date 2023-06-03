@@ -7,6 +7,12 @@ resource "aws_wafv2_web_acl" "default" {
     allow {}
   }
 
+  custom_response_body {
+    content      = "You've been WAFed 🔥"
+    content_type = "TEXT_PLAIN"
+    key          = "wafed"
+  }
+
   visibility_config {
     cloudwatch_metrics_enabled = var.acl_metrics_enabled
     metric_name                = "waf-apprunner-acl-metric"
