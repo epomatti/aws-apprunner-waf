@@ -1,4 +1,4 @@
-# AWS App Runner + WAF
+# AWS App Runner + WAF & X-Ray
 
 AWS App Runner using WAF rules.
 
