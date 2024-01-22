@@ -19,6 +19,12 @@ resource "aws_wafv2_web_acl" "default" {
     sampled_requests_enabled   = var.acl_sample_requests_enabled
   }
 
+  #################################
+  ### Custom Rules
+  #################################
+
+  ###  Allow Brazil only ###
+
   rule {
     name     = "allowed-contries"
     priority = 0
@@ -49,6 +55,8 @@ resource "aws_wafv2_web_acl" "default" {
     }
   }
 
+  ### Rate Limit ###
+
   rule {
     name     = "rate-limit"
     priority = 1
@@ -71,7 +79,36 @@ resource "aws_wafv2_web_acl" "default" {
 
     visibility_config {
       cloudwatch_metrics_enabled = var.rules_metrics_enabled
-      metric_name                = "rate-limit"
+      metric_name                = "kompass-rate-limit"
+      sampled_requests_enabled   = var.rules_sample_requests_enabled
+    }
+  }
+
+
+  #################################
+  ### Managed Rules
+  #################################
+
+  ### Core/Common ###
+
+  rule {
+    name     = "aws-common"
+    priority = 10
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesCommonRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = var.rules_metrics_enabled
+      metric_name                = "aws-common-metric"
       sampled_requests_enabled   = var.rules_sample_requests_enabled
     }
   }
@@ -98,6 +135,77 @@ resource "aws_wafv2_web_acl" "default" {
     }
   }
 
+  ### Known Bad Inputs ###
+
+  rule {
+    name     = "aws-knownbadinputs"
+    priority = 20
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesKnownBadInputsRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = var.rules_metrics_enabled
+      metric_name                = "aws-knownbadinputs-metric"
+      sampled_requests_enabled   = var.rules_sample_requests_enabled
+    }
+  }
+
+  ### Reputation List ###
+
+  rule {
+    name     = "aws-ip-reputation"
+    priority = 30
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesAmazonIpReputationList"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = var.rules_metrics_enabled
+      metric_name                = "aws-ip-reputation-metric"
+      sampled_requests_enabled   = var.rules_sample_requests_enabled
+    }
+  }
+
+  ### Anonymous IP List ###
+
+  rule {
+    name     = "aws-anonymous-ip"
+    priority = 40
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesAnonymousIpList"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = var.rules_metrics_enabled
+      metric_name                = "aws-anonymous-ip-metric"
+      sampled_requests_enabled   = var.rules_sample_requests_enabled
+    }
+  }
 }
 
 resource "aws_wafv2_web_acl_association" "app_runner" {
