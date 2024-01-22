@@ -5,12 +5,12 @@ variable "aws_region" {
 
 variable "app_runner_cpu" {
   type    = string
-  default = "0.5 vCPU"
+  default = "2 vCPU"
 }
 
 variable "app_runner_memory" {
   type    = string
-  default = "1 GB"
+  default = "4 GB"
 }
 
 variable "max_concurrency" {
