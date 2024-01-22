@@ -33,9 +33,8 @@ Blocked requests should have a custom message:
 
 To use ECR, configure the `.auto.tfvars` file before creating the resources:
 
-```hcl
-image_repository_type = "ECR"
-repository_url        = "..."
+```sh
+bash ecrPushHttpbin.sh
 ```
 
 Also, uncomment the ECR authentication:

@@ -1,7 +1,3 @@
-variable "repository_url" {
-  type = string
-}
-
 variable "access_role_arn" {
   type = string
 }
@@ -26,6 +22,6 @@ variable "min_size" {
   type = number
 }
 
-variable "image_repository_type" {
+variable "repository_url" {
   type = string
 }

@@ -15,16 +15,19 @@ module "iam" {
   source = "./modules/iam"
 }
 
+module "ecr" {
+  source = "./modules/ecr"
+}
+
 module "app_runner" {
-  source                = "./modules/app-runner"
-  repository_url        = var.repository_url
-  cpu                   = var.app_runner_cpu
-  memory                = var.app_runner_memory
-  max_concurrency       = var.max_concurrency
-  max_size              = var.max_size
-  min_size              = var.min_size
-  access_role_arn       = module.iam.access_role_arn
-  image_repository_type = var.image_repository_type
+  source          = "./modules/app-runner"
+  cpu             = var.app_runner_cpu
+  memory          = var.app_runner_memory
+  max_concurrency = var.max_concurrency
+  max_size        = var.max_size
+  min_size        = var.min_size
+  access_role_arn = module.iam.access_role_arn
+  repository_url  = module.ecr.repository_url
 }
 
 module "waf" {

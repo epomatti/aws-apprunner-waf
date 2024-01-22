@@ -28,16 +28,6 @@ variable "min_size" {
   default = 1
 }
 
-variable "repository_url" {
-  type    = string
-  default = "public.ecr.aws/nginx/nginx:latest"
-}
-
-variable "image_repository_type" {
-  type    = string
-  default = "ECR_PUBLIC"
-}
-
 ### WAF ###
 
 variable "waf_allowed_country_codes" {
