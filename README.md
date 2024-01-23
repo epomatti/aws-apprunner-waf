@@ -39,6 +39,8 @@ It is important to notice the limits of inspection as well:
 
 > AWS WAF inspects the first 8 KB (8,192 bytes) of the request body. This is a hard service limit and can't be changed.
 
+To teste different options, use the Insomnia project export.
+
 ## Optional (ECR)
 
 To use ECR, configure the `.auto.tfvars` file before creating the resources:
