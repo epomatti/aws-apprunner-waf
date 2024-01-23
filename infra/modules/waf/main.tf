@@ -1,3 +1,9 @@
+module "waf_logging" {
+  source      = "./logging"
+  web_acl_arn = aws_wafv2_web_acl.default.arn
+}
+
+### ACL ###
 resource "aws_wafv2_web_acl" "default" {
   name        = "waf-apprunner"
   description = "App Runner WAF"
@@ -79,7 +85,7 @@ resource "aws_wafv2_web_acl" "default" {
 
     visibility_config {
       cloudwatch_metrics_enabled = var.rules_metrics_enabled
-      metric_name                = "kompass-rate-limit"
+      metric_name                = "rate-limit"
       sampled_requests_enabled   = var.rules_sample_requests_enabled
     }
   }
