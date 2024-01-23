@@ -11,7 +11,7 @@ terraform apply -auto-approve
 
 The default image will be NGINX.
 
-### WAF
+## WAF
 
 Customize WAF rules behavior:
 
@@ -29,7 +29,17 @@ Blocked requests should have a custom message:
 
 <img src=".assets/wafed.png" width=400 />
 
-### Optional (ECR)
+## Body size
+
+Following this [guideline][1], WAF is configured with `AWS Managed Rules Core` rule set to limit requests in the `/post` endpoint to 8,192 bytes. Requests with more than that will be blocked.
+
+An exception is added to the `/put` route, which will allow.
+
+It is important to notice the limits of inspection as well:
+
+> AWS WAF inspects the first 8 KB (8,192 bytes) of the request body. This is a hard service limit and can't be changed.
+
+## Optional (ECR)
 
 To use ECR, configure the `.auto.tfvars` file before creating the resources:
 
@@ -74,3 +84,5 @@ For local building the docker image:
 docker build -t dotnet-app-image .
 docker run --rm -p 80:80 --name dotnet-app dotnet-app-image
 ```
+
+[1]: https://repost.aws/knowledge-center/waf-http-request-body-inspection

@@ -91,9 +91,10 @@ resource "aws_wafv2_web_acl" "default" {
 
   ### Core/Common ###
 
+  # https://repost.aws/knowledge-center/waf-http-request-body-inspection
   rule {
     name     = "aws-common"
-    priority = 10
+    priority = 2
 
     override_action {
       none {}
@@ -103,6 +104,14 @@ resource "aws_wafv2_web_acl" "default" {
       managed_rule_group_statement {
         name        = "AWSManagedRulesCommonRuleSet"
         vendor_name = "AWS"
+        rule_action_override {
+          name = "SizeRestrictions_BODY"
+
+          action_to_use {
+            count {
+            }
+          }
+        }
       }
     }
 
@@ -113,33 +122,56 @@ resource "aws_wafv2_web_acl" "default" {
     }
   }
 
-  rule {
-    name     = "sqli"
-    priority = 50
 
-    override_action {
-      none {}
+  rule {
+    name     = "aws-common-size-restriction-body"
+    priority = 3
+
+    action {
+      block {}
     }
 
     statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesSQLiRuleSet"
-        vendor_name = "AWS"
+      and_statement {
+        statement {
+          label_match_statement {
+            key   = "awswaf:managed:aws:core-rule-set:SizeRestrictions_Body"
+            scope = "LABEL"
+          }
+        }
+        statement {
+          not_statement {
+            statement {
+              byte_match_statement {
+                positional_constraint = "CONTAINS"
+                search_string         = "/put"
+
+                field_to_match {
+                  uri_path {}
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "NONE"
+                }
+              }
+            }
+          }
+        }
       }
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = var.rules_metrics_enabled
-      metric_name                = "sqli-metric"
-      sampled_requests_enabled   = var.rules_sample_requests_enabled
+      cloudwatch_metrics_enabled = true
+      metric_name                = "size-restriction"
+      sampled_requests_enabled   = true
     }
   }
 
   ### Known Bad Inputs ###
-
   rule {
     name     = "aws-knownbadinputs"
-    priority = 20
+    priority = 4
 
     override_action {
       none {}
@@ -163,7 +195,7 @@ resource "aws_wafv2_web_acl" "default" {
 
   rule {
     name     = "aws-ip-reputation"
-    priority = 30
+    priority = 5
 
     override_action {
       none {}
@@ -184,10 +216,9 @@ resource "aws_wafv2_web_acl" "default" {
   }
 
   ### Anonymous IP List ###
-
   rule {
     name     = "aws-anonymous-ip"
-    priority = 40
+    priority = 6
 
     override_action {
       none {}
@@ -206,6 +237,30 @@ resource "aws_wafv2_web_acl" "default" {
       sampled_requests_enabled   = var.rules_sample_requests_enabled
     }
   }
+
+  # SQL Injection
+  rule {
+    name     = "sqli"
+    priority = 7
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesSQLiRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = var.rules_metrics_enabled
+      metric_name                = "sqli-metric"
+      sampled_requests_enabled   = var.rules_sample_requests_enabled
+    }
+  }
+
 }
 
 resource "aws_wafv2_web_acl_association" "app_runner" {
