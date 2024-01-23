@@ -33,7 +33,7 @@ Blocked requests should have a custom message:
 
 Following this [guideline][1], WAF is configured with `AWS Managed Rules Core` rule set to limit requests in the `/post` endpoint to 8,192 bytes. Requests with more than that will be blocked.
 
-An exception is added to the `/put` route, which will allow.
+An exception is added to the `/put` route, which will allow requests to go through.
 
 It is important to notice the limits of inspection as well:
 
